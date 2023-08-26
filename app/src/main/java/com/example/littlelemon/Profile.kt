@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.littlelemon
 
 import android.content.Context
@@ -14,10 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -153,7 +151,7 @@ fun Profile(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(bottom = 30.dp, start = 15.dp, end = 15.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF4CE14),
+                backgroundColor = Color(0xFFF4CE14),
                 contentColor = Color(0xFF000000)
             ),
             border = BorderStroke(2.dp, Color(0xFFFFA500)),

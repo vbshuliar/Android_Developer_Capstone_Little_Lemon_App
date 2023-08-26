@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.navigation.NavHostController
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Onboarding(navController: NavHostController) {
     var firstName by remember { mutableStateOf("") }
@@ -108,14 +107,18 @@ fun Onboarding(navController: NavHostController) {
                     sharedPreferences.edit(commit = true) { putString("email", email) }
                     navController.navigate(Home.route)
                 } else {
-                    Toast.makeText(context, "Registration unsuccessful. Please enter all data.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Registration unsuccessful. Please enter all data.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 15.dp, end = 15.dp, bottom = 30.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF4CE14),
+                backgroundColor = Color(0xFFF4CE14),
                 contentColor = Color(0xFF000000)
             )
         ) {
