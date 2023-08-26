@@ -17,6 +17,9 @@ fun Navigation(navController: NavHostController) {
         composable(Home.route) {
             Home(navController)
         }
+        composable(Profile.route) {
+            Profile(navController)
+        }
     }
 }
 
@@ -24,5 +27,5 @@ fun Navigation(navController: NavHostController) {
 fun checkUserDataInSharedPreferences(): Boolean {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("user_data", Context.MODE_PRIVATE)
-    return sharedPreferences.contains("user_id")
+    return sharedPreferences.contains("first_name")
 }
