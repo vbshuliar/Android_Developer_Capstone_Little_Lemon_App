@@ -4,11 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -22,58 +17,50 @@ import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-
     private val httpClient = HttpClient(Android) {
         install(ContentNegotiation) {
             json(contentType = ContentType("text", "plain"))
         }
     }
-
     private val database by lazy {
-        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database").build()
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database1").build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            val databaseMenuItems by database.menuItemDao().getAll().observeAsState(emptyList())
-            var orderMenuItems by remember {
-                mutableStateOf(false)
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (database.menuItemDao().isEmpty()) {
+                val menuItemsNetwork = fetchMenu()
+                saveMenuToDatabase(menuItemsNetwork)
             }
+        }
+        setContent {
+
             LittleLemonTheme {
                 val navController = rememberNavController()
-                MyNavigation(navController = navController)
+                MyNavigation(navController = navController, database)
+
             }
         }
 
+
     }
 
-
-    private fun fetchMenu() {
-        GlobalScope.launch(Dispatchers.Main) {
-            try {
-                val menuData: MenuNetwork = httpClient.get("URL_TO_YOUR_JSON_ENDPOINT")
-                val menuItems: List<MenuItemNetwork> = menuData.menu
-
-                // Now you have the list of menu items, you can process them as needed
-                for (menuItem in menuItems) {
-                    // Handle each menu item (e.g., display in a RecyclerView)
-                }
-            } catch (e: Exception) {
-                // Handle error
-            }
-        }
+    private suspend fun fetchMenu(): List<MenuItemNetwork> {
+        return httpClient.get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")
+            .body<MenuNetwork>().menu
     }
 
+    private fun saveMenuToDatabase(menuItemsNetwork: List<MenuItemNetwork>) {
+        val menuItemsRoom = menuItemsNetwork.map { it.toMenuItemRoom() }
+        database.menuItemDao().insertAll(*menuItemsRoom.toTypedArray())
+    }
 }
 
 @Composable
-fun MyNavigation(navController: NavHostController) {
-    Navigation(navController)
+fun MyNavigation(navController: NavHostController, database: AppDatabase) {
+    Navigation(navController, database)
 }
-
-
