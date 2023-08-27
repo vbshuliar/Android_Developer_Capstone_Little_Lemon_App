@@ -63,7 +63,6 @@ fun Home(navController: NavHostController, database: AppDatabase) {
         Spacer(modifier = Modifier.weight(0.5f))
         HeroSection(database)
 
-
     }
 }
 
