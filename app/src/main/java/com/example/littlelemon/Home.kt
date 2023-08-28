@@ -86,6 +86,8 @@ fun Home(navController: NavHostController, database: AppDatabase) {
 @Composable
 fun HeroSection(menuItemsDatabase: List<MenuItemRoom>) {
     var menuItems = menuItemsDatabase
+    var selectedCategory by remember { mutableStateOf("") }
+
 
     Column(
         modifier = Modifier
@@ -134,6 +136,7 @@ fun HeroSection(menuItemsDatabase: List<MenuItemRoom>) {
         }
 
 
+
         TextField(
             label = { Text(text = "Enter search phrase") },
             value = searchPhrase,
@@ -155,22 +158,13 @@ fun HeroSection(menuItemsDatabase: List<MenuItemRoom>) {
                 )
             },
         )
-        menuItems = if (searchPhrase.isNotEmpty()) {
-            menuItems.filter { it.title.contains(searchPhrase, ignoreCase = true) }
-        } else {
-            menuItemsDatabase
+        if (searchPhrase.isNotEmpty()) {
+            menuItems =
+                menuItemsDatabase.filter { it.title.contains(searchPhrase, ignoreCase = true) }
         }
 
 
     }
-    MenuItems(menuItemsList = menuItems)
-}
-
-
-@Composable
-fun MenuItems(menuItemsList: List<MenuItemRoom>) {
-
-
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Text(
             text = "ORDER FOR DELIVERY!",
@@ -182,61 +176,65 @@ fun MenuItems(menuItemsList: List<MenuItemRoom>) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 25.dp)
+                .padding(top = 10.dp, bottom = 10.dp)
         ) {
             Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.height(40.dp),
-                colors = ButtonDefaults.buttonColors(
+                onClick = {
+                    selectedCategory = "starters"
+                }, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFEDEFEE)
-                ),
-                shape = RoundedCornerShape(15.dp)
+                ), shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Starters", fontWeight = FontWeight.Bold, color = Color(0xFF4C5E57))
             }
 
             Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.height(40.dp),
-                colors = ButtonDefaults.buttonColors(
+                onClick = {
+                    selectedCategory = "mains"
+                }, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFEDEFEE)
-                ),
-                shape = RoundedCornerShape(15.dp)
+                ), shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Mains", fontWeight = FontWeight.Bold, color = Color(0xFF4C5E57))
             }
 
             Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.height(40.dp),
-                colors = ButtonDefaults.buttonColors(
+                onClick = {
+                    selectedCategory = "desserts"
+                }, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFEDEFEE)
-                ),
-                shape = RoundedCornerShape(15.dp)
+                ), shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Desserts", fontWeight = FontWeight.Bold, color = Color(0xFF4C5E57))
             }
 
             Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.height(40.dp),
-                colors = ButtonDefaults.buttonColors(
+                onClick = {
+                    selectedCategory = "drinks"
+                }, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFEDEFEE)
-                ),
-                shape = RoundedCornerShape(15.dp)
+                ), shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Drinks", fontWeight = FontWeight.Bold, color = Color(0xFF4C5E57))
             }
-
-
-        }
-        LazyColumn(
-            modifier = Modifier.fillMaxHeight()
-        ) {
-            items(items = menuItemsList, itemContent = { menuItem -> MenuItem(menuItem) })
         }
     }
+    if (selectedCategory.isNotEmpty()) {
+        menuItems = menuItems.filter { it.category.contains(selectedCategory) }
+    }
+    MenuItems(menuItemsList = menuItems)
+}
 
+
+@Composable
+fun MenuItems(menuItemsList: List<MenuItemRoom>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(16.dp)
+    ) {
+        items(items = menuItemsList, itemContent = { menuItem -> MenuItem(menuItem) })
+    }
 }
 
 
